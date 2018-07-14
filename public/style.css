@@ -1,6 +1,7 @@
 *{
   box-sizing: border-box;
 }
+
 .clearfix:after {
     content: ".";
     display: block;
@@ -9,24 +10,56 @@
     line-height: 0;
     height: 0;
 }
+
 body{
   font-size: 20px;
-  background-color: black;
-  color: white;
+  background-color: white;
+  color: black;
   font-family: 'Wendy One', sans-serif;
-}
-.container{
-  padding: 5% 5% 5% 5%;
+  margin: 0 auto;
+  text-align: center;
 }
 
-.role{
+header a{
+  text-decoration: none;
+  color: skyblue;
+}
+
+.container{
   width: 40%;
-  margin: 0 5% 0 5%;
-  text-align: center;
+  margin: 0 auto;
+  border: 15px solid red;
+}
+
+.itemDisplayed{
+  width: 60%;
+  height: 400px;
+  border: 5px solid grey;
   float: left;
 }
+
 h1{
   font-size: 2.5rem;
+}
+
+.screen{
+  width: 40%;
+  height: 100px;
+  border: 2px solid grey;
+  float: left;
+}
+
+.keypad{
+  width: 40%;
+  height: 190px;
+  border: 2px solid grey;
+  float: left;
+}
+
+.keypad button{
+  width: 20%;
+  font-size: 1.5rem;
+  margin: 5px 10%;
 }
 
 img{

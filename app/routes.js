@@ -7,21 +7,13 @@ module.exports = function(app, passport, db) {
         res.render('index.ejs');
     });
 
-    app.get('/menu', function(req, res) {
-        res.render('menu.ejs');
-    });
-
-    app.get('/order', function(req, res) {
-        res.render('order.ejs');
-    });
-
     // PROFILE SECTION =========================
     app.get('/profile', isLoggedIn, function(req, res) {
-        db.collection('messages').find().toArray((err, result) => {
+        db.collection('items').find().toArray((err, result) => {
           if (err) return console.log(err)
           res.render('profile.ejs', {
             user : req.user,
-            messages: result
+            items: result
           })
         })
     });
@@ -34,21 +26,25 @@ module.exports = function(app, passport, db) {
 
 // message board routes ===============================================================
 
-    // This is the collection for customer orders
-    app.post('/cashier', (req, res) => {
-      db.collection('messages').save({type:req.body.type, size: req.body.size, quantity: req.body.quantity, other:req.body.other, name:req.body.name, complete: false }, (err, result) => {
+    app.post('/admin', (req, res) => {
+      db.collection('items').save({album: req.body.album, price: req.body.price, quantity: 0, profit: 0}, (err, result) => {
         if (err) return console.log(err)
         console.log('saved to database')
-        res.redirect('/menu')
-      })
-    })
+      });
+    });
 
-    // For barista to check order complete
-    app.put('/barista', (req, res) => {
-      db.collection('messages')
-      .findOneAndUpdate({type:req.body.type, size: req.body.size, quantity: req.body.quantity, other:req.body.other, name:req.body.name, complete: false }, {
+    app.post('/funds', (req, res) => {
+      db.collection('cash').save({name: req.body.name, profit: 0}, (er, res) => {
+        if (err) return console.log(err)
+        console.log('saved to database')
+      });
+    });
+
+    app.put('/admin', (req, res) => {
+      db.collection('items')
+      .findOneAndUpdate({album: req.body.album}, {
         $set: {
-          complete: true
+          quantity:req.body.quantity + 5
         }
       }, {
         sort: {_id: -1},
@@ -59,9 +55,40 @@ module.exports = function(app, passport, db) {
       })
     })
 
+    app.put('/vend', (req, res) => {
+      db.collection('items')
+      .findOneAndUpdate({album: req.body.album}, {
+        $inc: {
+          quantity: - 1,
+          profit: + req.body.price
+        }
+      }, {
+        sort: {_id: -1},
+        upsert: true
+      },(err, result) => {
+        if (err) return res.send(err)
+        res.send(result)
+      });
+    });
+
+    app.put('/mula', (req, res) => {
+      db.collection('cash')
+      .findOneAndUpdate({name: req.body.name}, {
+        $inc: {
+          profit: + req.body.price
+        }
+      }, {
+        sort: {_id: -1},
+        upsert: false
+      },(err, result) => {
+        if (err) return res.send(err)
+        res.send(result)
+      });
+    });
+
     // Will delete from customerOrder collections
     app.delete('/remove', (req, res) => {
-      db.collection('messages').findOneAndDelete({name:req.body.name , type:req.body.type}, (err, result) => {
+      db.collection('items').findOneAndDelete({album: req.body.album}, (err, result) => {
         if (err) return res.send(500, err)
         res.send('Message deleted!')
       })
