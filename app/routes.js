@@ -9,14 +9,21 @@ module.exports = function(app, passport, db) {
 
     // PROFILE SECTION =========================
     app.get('/profile', isLoggedIn, function(req, res) {
-        db.collection('items').find().toArray((err, result) => {
-          if (err) return console.log(err)
-          res.render('profile.ejs', {
-            user : req.user,
-            items: result
+          db.collection('items').find().toArray((err, result) => {
+            if (err) return console.log(err)
+            db.collection('cash').find().toArray((e, r) =>
+            {
+              console.log(r);
+              res.render('profile.ejs', {
+                user : req.user,
+                items: result,
+                other: r[0].profit
+              })
+            })
           })
-        })
-    });
+      });
+
+      app.get('/profile')
 
     // LOGOUT ==============================
     app.get('/logout', function(req, res) {

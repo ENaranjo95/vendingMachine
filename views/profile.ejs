@@ -46,6 +46,9 @@
           </li>
         <% } %>
       </ul>
+      <section>
+        <h1>Total Money Earned: $<%= other %></h1>
+      </section>
     </section>
     <!-- I need a form, to submit product name and quantity with a submit button, it can be 2 user inputs -->
       <form class="" action="/admin" method="POST">
@@ -53,7 +56,7 @@
         <input id="newPrice" type="text" name="price" value="" placeholder="Price">
         <input id="submitNew" type="submit" name="" value="Submit Order">
       </form>
-      
+
       <form action="/funds" method="POST">
         <input type="text" name="name" placeholder="Owner's Name">
         <input id="starter" name="profit" placeholder="Inital Start">
